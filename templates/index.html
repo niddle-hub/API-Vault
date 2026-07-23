@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+
+{% block title %}Ключи · API Vault{% endblock %}
+{% block head %}
+<meta name="csrf-token" content="{{ csrf_token }}">
+<script src="{{ url_for('static', filename='script.js') }}" defer></script>
+{% endblock %}
+
+{% block content %}
+<header class="app-header">
+    <div class="header-inner">
+        <div class="brand">
+            <img src="{{ url_for('static', filename='images/vault_icon.png') }}" alt="" class="brand-icon" aria-hidden="true">
+            <span>API Vault</span>
+        </div>
+        <form method="post" action="{{ url_for('logout') }}">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+            <button type="submit" class="quiet-button">Заблокировать</button>
+        </form>
+    </div>
+</header>
+
+<main class="app-main">
+    <section class="page-heading" aria-labelledby="page-title">
+        <div>
+            <p class="eyebrow">Локальное хранилище</p>
+            <h1 id="page-title">API-ключи</h1>
+        </div>
+        <p id="key-count" class="key-count" aria-live="polite"></p>
+    </section>
+
+    <section class="key-workspace" aria-label="Сохранённые API-ключи">
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th scope="col">Сервис</th>
+                        <th scope="col">Ключ</th>
+                        <th scope="col" class="actions-heading">Действия</th>
+                    </tr>
+                </thead>
+                <tbody id="keys-body"></tbody>
+            </table>
+
+            <div id="empty-state" class="empty-state" hidden>
+                <h2>Хранилище пусто</h2>
+                <p>Добавьте первый API-ключ с помощью формы ниже.</p>
+            </div>
+
+            <div id="loading-state" class="loading-state">Загрузка ключей…</div>
+        </div>
+
+        <form id="add-form" class="add-form">
+            <div class="form-field">
+                <label for="new-name">Название</label>
+                <input id="new-name" name="name" maxlength="120" placeholder="Например, OpenAI" required>
+            </div>
+            <div class="form-field add-key-field">
+                <label for="new-value">Ключ</label>
+                <div class="password-field">
+                    <input
+                        id="new-value"
+                        name="value"
+                        type="password"
+                        maxlength="10000"
+                        placeholder="Вставьте API-ключ"
+                        autocomplete="off"
+                        required
+                    >
+                    <button type="button" class="visibility-button" data-toggle-password="new-value">
+                        Показать
+                    </button>
+                </div>
+            </div>
+            <button type="submit" class="primary-button add-button">Добавить</button>
+        </form>
+    </section>
+</main>
+
+<dialog id="edit-dialog" class="edit-dialog">
+    <form id="edit-form" method="dialog">
+        <div class="dialog-header">
+            <div>
+                <p class="eyebrow">Редактирование</p>
+                <h2>Изменить ключ</h2>
+            </div>
+            <button type="button" class="close-button" id="close-dialog" aria-label="Закрыть">×</button>
+        </div>
+
+        <input type="hidden" id="edit-id">
+        <div class="form-field">
+            <label for="edit-name">Название</label>
+            <input id="edit-name" maxlength="120" required>
+        </div>
+        <div class="form-field">
+            <label for="edit-value">Ключ</label>
+            <div class="password-field">
+                <input
+                    id="edit-value"
+                    type="password"
+                    maxlength="10000"
+                    placeholder="Оставьте пустым, чтобы не менять"
+                    autocomplete="off"
+                >
+                <button type="button" class="visibility-button" data-toggle-password="edit-value">
+                    Показать
+                </button>
+            </div>
+            <button type="button" id="load-current-value" class="text-button">
+                Загрузить текущее значение
+            </button>
+        </div>
+
+        <div class="dialog-actions">
+            <button type="button" class="secondary-button" id="cancel-edit">Отмена</button>
+            <button type="submit" class="primary-button">Сохранить</button>
+        </div>
+    </form>
+</dialog>
+
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+{% endblock %}

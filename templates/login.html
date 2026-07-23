@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+
+{% block title %}{% if setup %}Настройка{% else %}Вход{% endif %} · API Vault{% endblock %}
+{% block body_class %}auth-page{% endblock %}
+
+{% block content %}
+<main class="auth-shell">
+    <section class="auth-panel" aria-labelledby="auth-title">
+        <div class="brand">
+            <img src="{{ url_for('static', filename='images/vault_icon.png') }}" alt="" class="brand-icon" aria-hidden="true">
+            <span>API Vault</span>
+        </div>
+
+        <div class="auth-heading">
+            <p class="eyebrow">{% if setup %}Первый запуск{% else %}Защищённое хранилище{% endif %}</p>
+            <h1 id="auth-title">
+                {% if setup %}Создайте мастер-пароль{% else %}Откройте хранилище{% endif %}
+            </h1>
+            <p>
+                {% if setup %}
+                    Он шифрует ваши ключи и не сохраняется на диске.
+                {% else %}
+                    Введите мастер-пароль для доступа к сохранённым ключам.
+                {% endif %}
+            </p>
+        </div>
+
+        {% if error %}
+        <div class="alert" role="alert">{{ error }}</div>
+        {% endif %}
+
+        <form method="post" class="auth-form">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+
+            <label for="password">Мастер-пароль</label>
+            <div class="password-field">
+                <input
+                    id="password"
+                    name="password"
+                    type="password"
+                    minlength="8"
+                    autocomplete="{% if setup %}new-password{% else %}current-password{% endif %}"
+                    autofocus
+                    required
+                >
+                <button type="button" class="visibility-button" data-toggle-password="password">
+                    Показать
+                </button>
+            </div>
+
+            {% if setup %}
+            <label for="password-confirm">Повторите пароль</label>
+            <div class="password-field">
+                <input
+                    id="password-confirm"
+                    name="password_confirm"
+                    type="password"
+                    minlength="8"
+                    autocomplete="new-password"
+                    required
+                >
+                <button type="button" class="visibility-button" data-toggle-password="password-confirm">
+                    Показать
+                </button>
+            </div>
+            <p class="field-note">Минимум 8 символов. Восстановить забытый пароль невозможно.</p>
+            {% endif %}
+
+            <button type="submit" class="primary-button auth-submit">
+                {% if setup %}Создать хранилище{% else %}Войти{% endif %}
+            </button>
+        </form>
+    </section>
+
+    <p class="local-note">Данные остаются на этом компьютере</p>
+</main>
+
+<script>
+    document.querySelectorAll("[data-toggle-password]").forEach((button) => {
+        button.addEventListener("click", () => {
+            const input = document.getElementById(button.dataset.togglePassword);
+            const show = input.type === "password";
+            input.type = show ? "text" : "password";
+            button.textContent = show ? "Скрыть" : "Показать";
+        });
+    });
+</script>
+{% endblock %}
