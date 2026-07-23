@@ -23,6 +23,12 @@
 - ⚡ **Zero-Knowledge Architecture** - Master password never leaves your device
 - 🖼️ **Emoji/Favicon Support** - Custom vault icon per project
 
+## Demo
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/niddle-hub/API-Vault/main/static/images/vault_preview.png" alt="API Vault Preview" width="700">
+</p>
+
 ## Requirements
 
 - Python 3.10 or higher
